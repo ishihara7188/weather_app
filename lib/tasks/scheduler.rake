@@ -29,26 +29,26 @@ task :update_feed => :environment do
   min_per = 20
   if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
     word1 =
-      ["aaa",
-       "bbb",
-       "ccc"].sample
+      ["起きたか",
+       "時代は確実に動いている",
+       "俗物ども"].sample
     word2 =
-      ["aaa",
-       "bbb",
-       "ccc"].sample
+      ["これで終わりにするか、続けるか。シャア！",
+       "こんな所で朽ち果てる己の身を呪うがいい",
+       "これほどのプレッシャーを私に与える"].sample
 
     # 降水確率によってメッセージを変更する閾値の設定
     mid_per = 50
     if per06to12.to_i >= mid_per || per12to18.to_i >= mid_per || per18to24.to_i >= mid_per
-      word3 = "aaa"
+      word3 = "今日はどうやら一雨ありそうだ"
     else
-      word3 = "bbb"
+      word3 = "今日は雨は降らない、安心しろ\n"
     end
 
     push =
       "#{word1}\n
       #{word3}\n
-      降水確率はこんな感じだよ。\n
+      プレッシャーを感じる……。\n
       6〜12時 #{per06to12}%\n
       12〜18時#{per12to18}%\n
       18〜24時#{per18to24}%\n

@@ -40,17 +40,12 @@ class LinebotController < ApplicationController
               push =
                 "明日か......\n
                  どうやら雨が降るみたいだ\n
-                 降水確率は\n
-                 6〜12時　#{per06to12}％\n
-                 12〜18時　 #{per12to18}％\n
-                 18〜24時　#{per18to24}％\n
-                 となっている\n
                  せいぜい俗物らしく雨に打たれるのだな"
             else
               push =
-                "降らないパターン\n
-                 あああ\n
-                 あああ"
+                "明日はどうやら雨は降らなそうだ\n
+                 これで決まったな\n
+                 ゼダンの門にはアクシズをぶつける！"
             end
 
           # 明後日の天気を返す
@@ -60,55 +55,61 @@ class LinebotController < ApplicationController
               per18to24 = doc.elements[xpath + 'info[3]/rainfallchance/period[4]'].text
               if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
                 push =
-                  "明後日か......\n
-                   どうやら雨が降るみたいだ\n
-                   降水確率は\n
-                   6〜12時　#{per06to12}％\n
-                   12〜18時　 #{per12to18}％\n
-                   18〜24時　#{per18to24}％\n
-                   となっている\n
-                   せいぜい俗物らしく雨に打たれるのだな"
+                  "明後日......\n
+                   なんだこのプレッシャーは......\n
+                   この私にこんなにもプレッシャーをかけた......\n
+                   あれは、危険すぎる......"
               else
                 push =
-                  "降らないパターン\n
-                   あああ\n
-                   あああ"
+                  "コロニーに住む人々の協力を得ることは大事なことだ\n
+                   我々の仕事がやりやすくなる。\n
+                   よく心に止めておけよ"
               end
 
         # 様々なコメント用
-        when /.*(可愛い|好き|etc).*/
-          push = "殺すぞ"
-        when /.*(可愛い|好き|etc).*/
-          push = "殺すぞ"
-        when /.*(可愛い|好き|etc).*/
-          push = "殺すぞ"
+        when /.*(可愛い|かわいい|好き|すき|ハマーン).*/
+          push = "黙れ！俗物！"
+        when /.*(ハマーン様万歳|ハマーン様).*/
+          push = "こういうバカな男もいる......\n
+                  世の中捨てたものではないぞ"
+        when /.*(死|ジュドー|カミーユ|アムロ|キュベレイ|ニュータイプ).*/
+          push = "強い子に会えて......。"
 
         # それ以外のコメントで天気を返す
-        when /.*(可愛い|好き|etc).*/
-          push = "殺すぞ"
         else
-          per06to12 = doc.elements[xpath + 'info/rainfallchance/period[2]l'].text
+           per06to12 = doc.elements[xpath + 'info/rainfallchance/period[2]l'].text
            per12to18 = doc.elements[xpath + 'info/rainfallchance/period[3]l'].text
            per18to24 = doc.elements[xpath + 'info/rainfallchance/period[4]l'].text
            if per06to12.to_i >= min_per || per12to18.to_i >= min_per || per18to24.to_i >= min_per
              word =
-                ["雨だけど元気出していこうね！",
-                 "雨に負けずファイト！！",
-                 "雨だけどああたの明るさでみんなを元気にしてあげて(^^)"].sample
-              push = "今日の天気？\n今日は雨が降りそうだから傘があった方が安心だよ。\n　  6〜12時　#{per06to12}％\n　12〜18時　 #{per12to18}％\n　18〜24時　#{per18to24}％\n#{word}"
+                ["私は宇宙の力を手にした\n
+                  引力に魂を引かれたティターンズなど\n
+                  恐るに足らん",
+                 "型通りにはまらぬ事も時としてある\n
+                  綺麗ごとだけでは済まないという事も\n
+                  心に止めておくのだぞ",
+                 "人は生きる限り一人だよ\n
+                  人類そのものもそうだ"].sample
+              push = "#{word}"
             else
               word =
-                ["天気もいいから一駅歩いてみるのはどう？(^^)",
-                 "今日会う人のいいところを見つけて是非その人に教えてあげて(^^)",
-                 "素晴らしい一日になりますように(^^)",
-                 "雨が降っちゃったらごめんね(><)"].sample
-              push = "今日の天気？\n今日は雨は降らなさそうだよ。\n#{word}"
+                ["このごに及んで私な感情で動くとは\n
+                  はじめは私に期待を抱かせて\n
+                  最後の最後に私を裏切る",
+                 "時代は確実に動いている\n
+                  倒すべき敵、それは\n
+                  カミーユ・ビダン、そういうことか",
+                 "この力を誰も阻止できぬことを\n
+                  思い知らせなければ意味がない\n
+                  少しの希望でも残せば\n
+                  また人は立ち上がろうとするのだから"].sample
+              push = "#{word}"
            end
         end
 
       # テキスト以外（画像等）のメッセージが送られた場合
       else
-        push = "俗物め"
+        push = "よくもずけずけと人の心の中に入る。恥を知れ、俗物"
       end
       message = {
         type: 'text',
@@ -116,14 +117,16 @@ class LinebotController < ApplicationController
       }
       client.reply_message(event['replyToken'], message)
 
-      # LINEお友達追された場合（機能②）
+        # LINEお友達追された場合（機能②）
       when Line::Bot::Event::Follow
+
         # 登録したユーザーのidをユーザーテーブルに格納
         line_id = event['source']['userId']
         User.create(line_id: line_id)
 
-      # LINEお友達解除された場合（機能③）
+        # LINEお友達解除された場合（機能③）
       when Line::Bot::Event::Unfollow
+
         # お友達解除したユーザーのデータをユーザーテーブルから削除
         line_id = event['source']['userId']
         User.find_by(line_id: line_id).destroy
@@ -135,9 +138,9 @@ class LinebotController < ApplicationController
   private
 
   def client
-    @client ||= Line::Bot::Client.new{ |config|
+    @client ||= Line::Bot::Client.new { |config|
       config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
-      config.channel_tolen = ENV["LINE_CHANNEL_TOKEN"]
+      config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
     }
   end
 end
